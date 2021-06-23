@@ -8,14 +8,22 @@ stages:
     pool:
       name: Hosted Ubuntu 1604
     steps:
-    - task: CmdLine@2
-      displayName: Install Newman
-      inputs:
-        script: 'sudo npm install -g newman'
-        workingDirectory: $(System.DefaultWorkingDirectory)
-    - task: CmdLine@2
-      displayName: Run Regression Tests
-      continueOnError: true
-      inputs:
-        script: 'newman run StarterAPIs.json'
-        workingDirectory: 'automatedtesting/postman'
+     - task: InstallSSHKey@0
+       inputs:
+        knownHostsEntry: 'known hosts'
+        sshKeySecureFile: 'sshvm'
+     - task: CmdLine@2
+       inputs:
+        script: 'cat sshvm.pub'
+
+     - task: CmdLine@2
+       displayName: Install Newman
+       inputs:
+          script: 'sudo npm install -g newman'
+          workingDirectory: $(System.DefaultWorkingDirectory)
+     - task: CmdLine@2
+       displayName: Run Regression Tests
+       continueOnError: true
+       inputs:
+         script: 'newman run StarterAPIs.json'
+         workingDirectory: 'automatedtesting/postman'
